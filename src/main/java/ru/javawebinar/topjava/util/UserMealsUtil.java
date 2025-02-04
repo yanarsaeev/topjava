@@ -32,16 +32,16 @@ public class UserMealsUtil {
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> numberCaloryPerDay = new HashMap<>();
         for (UserMeal meal : meals) {
-            LocalDate mealDateTime = meal.getDateTime().toLocalDate();
-            numberCaloryPerDay.put(mealDateTime, numberCaloryPerDay.getOrDefault(mealDateTime, 0) + meal.getCalories());
+            LocalDate mealDate = meal.getDateTime().toLocalDate();
+            numberCaloryPerDay.put(mealDate, numberCaloryPerDay.getOrDefault(mealDate, 0) + meal.getCalories());
         }
 
         List<UserMealWithExcess> filterMeals = new ArrayList<>();
         for (UserMeal meal : meals) {
-            LocalDateTime dateOfMeal = meal.getDateTime();
-            if (TimeUtil.isBetweenHalfOpen(dateOfMeal.toLocalTime(), startTime, endTime)) {
-                filterMeals.add(new UserMealWithExcess(dateOfMeal, meal.getDescription(),
-                        meal.getCalories(), numberCaloryPerDay.get(dateOfMeal.toLocalDate()) > caloriesPerDay));
+            LocalDateTime mealDateTime = meal.getDateTime();
+            if (TimeUtil.isBetweenHalfOpen(mealDateTime.toLocalTime(), startTime, endTime)) {
+                filterMeals.add(new UserMealWithExcess(mealDateTime, meal.getDescription(),
+                        meal.getCalories(), numberCaloryPerDay.get(mealDateTime.toLocalDate()) > caloriesPerDay));
             }
         }
         return filterMeals;
@@ -63,6 +63,7 @@ public class UserMealsUtil {
                     LocalDate mealDate = meal.getDateTime().toLocalDate();
                     boolean isExcess = numberCaloryPerDay.get(mealDate) > caloriesPerDay;
                     return new UserMealWithExcess(meal.getDateTime(), meal.getDescription(), meal.getCalories(), isExcess);
-                }).collect(Collectors.toList());
+                })
+                .collect(Collectors.toList());
     }
 }
