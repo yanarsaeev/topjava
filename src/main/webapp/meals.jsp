@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.List" %>
 <%@ page import="ru.javawebinar.topjava.model.MealTo" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -14,24 +15,16 @@
                 <th>Описание</th>
                 <th>Калории</th>
             </tr>
-            <%
-                List<MealTo> list = (List<MealTo>) request.getAttribute("meals");
-                if (list != null) {
-                    for (MealTo meal : list) {
-            %>
-            <tr>
-                <td><%=meal.getDate()%> <%=meal.getTime()%></td>
-                <td><%=meal.getDescription()%></td>
-                <td><%=meal.getCalories()%></td>
-            </tr>
-            <%
-                    }
-                }  else {
-            %>
-            <tr>
-                <td colspan="2">Нет данных</td>
-            </tr>
-            <%}%>
+
+            <jsp:useBean id="meals" scope="request" type="java.util.List"/>
+            <c:forEach var="meal" items="${meals}">
+                <tr style="color: ${meal.isExcess() ? 'red' : 'green'}">
+                    <td>${meal.getDate()} ${meal.getTime()}</td>
+                    <td>${meal.getDescription()}</td>
+                    <td>${meal.getCalories()}</td>
+                </tr>
+            </c:forEach>
+
         </table>
     </section>
 </body>
