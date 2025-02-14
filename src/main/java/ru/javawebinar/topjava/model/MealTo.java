@@ -45,4 +45,8 @@ public class MealTo {
     public LocalTime getTime() {
         return dateTime.toLocalTime();
     }
+
+    public boolean isExcess() {
+        return excess;
+    }
 }
