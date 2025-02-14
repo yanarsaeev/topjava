@@ -1,33 +1,35 @@
 package ru.javawebinar.topjava.web;
 
-import org.slf4j.Logger;
-import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.MealsUtil;
 
+
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 public class MealServlet extends HttpServlet {
-    private static final Logger log = getLogger(MealServlet.class);
-    List<MealTo> list = new ArrayList<>();
+    private List<Meal> list;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        list = new ArrayList<>();
+        list.add(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
+        list.add(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000));
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("redirect to meals");
-        list.add(new MealTo(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500, true));
-        list.add(new MealTo(LocalDateTime.of(2020, Month.JANUARY, 28, 13, 0), "Eating", 1000, false));
-        list.add(new MealTo(LocalDateTime.of(2020, Month.JANUARY, 29, 14, 0), "Lunch", 900, true));
-
-        System.out.println("Meals size: " + list.size());
-        req.setAttribute("meals", list);
+        req.setAttribute("meals", MealsUtil.filteredByStreams(list, LocalTime.of(7, 0), LocalTime.of(21, 0), 2000));
         req.getRequestDispatcher("meals.jsp").forward(req, resp);
     }
 }
