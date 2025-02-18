@@ -29,6 +29,10 @@ public class Meal extends AbstractBaseEntity {
         return dateTime;
     }
 
+    public Integer getUserId() {
+        return userId;
+    }
+
     public String getDescription() {
         return description;
     }
