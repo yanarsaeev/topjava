@@ -7,13 +7,13 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
-    private final Map<Integer, User> usersMap = new ConcurrentHashMap<>();
+    private final Map<Integer, User> usersMap = new LinkedHashMap<>();
+    private final Map<String, User> emailMap = new HashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
     @Override
@@ -25,9 +25,15 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User save(User user) {
         log.info("save {}", user);
+        String normalizedEmail = user.getEmail().toLowerCase();
+
         if (user.isNew()) {
-            user.setId(counter.incrementAndGet());
+            if (emailMap.containsKey(normalizedEmail)) {
+                return null;
+            }
+//            user.setId(counter.incrementAndGet());
             usersMap.put(user.getId(), user);
+            emailMap.put(user.getEmail(), user);
             return user;
         }
 
