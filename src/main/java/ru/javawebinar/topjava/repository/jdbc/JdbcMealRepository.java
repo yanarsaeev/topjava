@@ -69,7 +69,7 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals ORDER BY date_time DESC", new BeanPropertyRowMapper<>(Meal.class), userId);
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? ORDER BY date_time DESC", new BeanPropertyRowMapper<>(Meal.class), userId);
     }
 
     @Override
